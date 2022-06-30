@@ -8,7 +8,6 @@ async function getJSONResponse(body) {
 	for await (const data of body) {
 		fullBody += data.toString();
 	}
-	console.log(fullBody);
 	return JSON.parse(fullBody);
 }
 
@@ -21,16 +20,14 @@ module.exports = {
 				.setDescription('user to lookup')
 				.setRequired(true)),
 	async execute(interaction) {
-		const player = interaction.options.getString('player');
-		const pl = new URLSearchParams({ player });
-
-		const dictResult = await request(`https://api.mozambiquehe.re/bridge?auth=${apiToken}&player=${pl}&platform=PC`);
+		const player = interaction.options.getString('username');
+		const dictResult = await request(`https://api.mozambiquehe.re/bridge?auth=${apiToken}&player=${player}&platform=PC`);
 		const { global } = await getJSONResponse(dictResult.body);
 		if (global == null) {
 			interaction.editReply(`No results for ${player}`);
 		}
 		else {
-			interaction.editReply(`${player}: ${global.name}\nRank: ${global.rankName} ${global.rankDiv}`);
+			interaction.editReply(`${player}: ${global.name}\nRank: ${global.rank.rankName} ${global.rank.rankDiv}`);
 		}
 	},
 };
